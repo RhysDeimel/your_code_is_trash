@@ -1,0 +1,225 @@
+[build-system]
+requires = ["setuptools>=83.0.0", "setuptools-scm[simple]>=10.2.1"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "your_code_is_trash"
+requires-python = ">=3.13"
+dynamic = ["readme", "version"]
+dependencies = [
+    "redis==8.1.0",
+]
+authors = [
+    {name = "Rhys Deimel", email = "deimelr@hotmail.com"},
+]
+maintainers = [
+    {name = "Rhys Deimel", email = "deimelr@hotmail.com"},
+]
+description = "Template repo for python projects"
+license = "MIT"
+
+[dependency-groups]
+test = [
+    "docker <=7.2.0",
+    "python-dotenv <=1.2.2",
+    "pytest-asyncio <=1.4.0",
+    "pytest-cov <=7.1.0",
+    "pytest-xdist <=3.8.0",
+    "pytest <=9.1.1",
+    "tox <=4.58.0",
+]
+lint = [
+    "mypy==2.3.0",  # hard pin to type complaints between versions
+    "ruff==0.16.1",  # hard pin to avoid formatting changes between versions
+]
+types = [
+    "types-redis==4.6.0.20241004"
+]
+docs = [
+    "mike <=2.2.0",
+    "mkdocs-material <=9.7.7",
+    "mkdocs <=1.6.1",
+    "mkdocstrings-python <=2.0.5",
+    "pyspelling <=2.12.1",
+]
+sast = [
+    "bandit<=1.9.4",
+]
+licensecheck = [
+    "licensecheck==2026.0.8",
+]
+dev = [
+    {include-group = "test"},
+    {include-group = "lint"},
+    {include-group = "types"},
+    {include-group = "docs"},
+]
+
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+]
+fail_under = 95
+ignore_errors = true
+skip_empty = true
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "tests/conftest.py"
+]
+
+
+[tool.licensecheck]
+ignore_packages = [
+    "certifi",   # Mozilla Public License 2.0 is weak copyleft
+]
+fail_licenses = [
+    "AGPL v1",
+    "AGPL v3",
+    "AGPL",
+    "GPL v2",
+    "GPL v2.1",
+    "GPL v3",
+    "GPL",
+    "LGPL v2",
+    "LGPL v2.1",
+    "LGPL v3",
+    "LGPL",
+]
+show_only_failing = true   # This config doesn't work because of a bug: https://github.com/FHPythonUtils/LicenseCheck/issues/127
+zero = true
+
+
+[tool.mypy]
+exclude = [
+    'build/*',
+    'tests/*',
+    'venv/*',
+]
+
+[[tool.mypy.overrides]]
+# module is untyped
+module = [
+    "docker",
+]
+follow_untyped_imports = true
+
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules --import-mode=importlib --cov . --cov-report html"
+asyncio_mode = "auto"
+markers = [
+    "slow: marks tests as slow (deselect with 'a-m \"not slow\"')",
+    "live: mark test as requiring credentials, API keys, or internet services",
+    "incremental",
+]
+norecursedirs=[
+    '*.egg',
+    '.*',
+    '.venv',
+    'build',
+    'dist',
+    'tmp',
+    'venv',
+]
+testpaths = ["tests"]
+
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.format]
+docstring-code-format = true
+preview = true
+quote-style = "single"
+
+[tool.ruff.lint]
+select = [
+    "B",  # flake8-bugbear
+    "C90",  # mccabe
+    "E4",  # pycodestyle errors 4xx
+    "E7",  # pycodestyle errors 7xx
+    "E9",  # pycodestyle errors 9xx
+    "F",  # pyflakes
+    "FURB",  # refurb,
+    "I",  # isoert,
+    "N",  # pep8-naming
+    "PT",  # flake8-pytest-style
+    "RUF", # ruff-specific rules
+    "TRY", # tryceratops
+    "UP",  # pyupgrade
+]
+
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md"], content-type = "text/markdown"}
+
+
+[tool.tox]
+requires = ["tox>=4"]
+env_list = [
+    "licensecheck",
+    "lint",
+    "type",
+    "sast",
+    "3.13",
+]
+
+[tool.tox.env_run_base]
+description = "Run test under {base_python}"
+dependency_groups = ["test"]
+deps = []
+pass_env = []
+commands = [
+    ["pytest", "-n", "auto", "--dist", "loadgroup", "{posargs:--failed-first}", "{posargs:--runslow}"]
+]
+
+[tool.tox.env.sast]
+description = "Static application security testing"
+dependency_groups = ["sast"]
+skip_install = true
+commands = [
+    ["bandit", "-r", "src"]
+]
+
+[tool.tox.env.licensecheck]
+description = "Check for license infringements"
+dependency_groups = ["licensecheck"]
+skip_install = true
+commands = [
+    ["licensecheck"]
+]
+
+[tool.tox.env.lint]
+description = "Run linters"
+dependency_groups = ["lint"]
+skip_install = true
+commands = [
+    ["ruff", "format", "--check"],
+    ["ruff", "check"],
+]
+
+[tool.tox.env.type]
+description = "Run type checks"
+dependency_groups = ["lint", "types"]
+commands = [["mypy", "."]]

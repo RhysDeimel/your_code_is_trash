@@ -1,0 +1,27 @@
+name: Feature Request  💡
+description: Suggest a new feature, enhancement, or idea
+labels: ["triage", "feature"]
+## Type is only available with paid plans
+# labels: ["triage"]
+# type: feature
+
+body:
+- type: textarea
+  attributes:
+    label: Description
+    description: A short description of enhancement. A TLDR.
+
+- type: textarea
+  attributes:
+    label: Possible Implementation
+    description: A clear and concise description of what you want to happen.
+
+- type: textarea
+  attributes:
+    label: Alternatives
+    description: A of any alternative solutions or features you've considered.
+
+- type: textarea
+  attributes:
+    label: Context
+    description: Add any other information, ticket/ issues links or screenshots about the feature request here.

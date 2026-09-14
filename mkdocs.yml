@@ -1,0 +1,23 @@
+site_name: Scaffold Docs
+site_url: https://your_code_is_trash.ragedriven.dev/
+repo_url: https://github.com/RhysDeimel/your_code_is_trash
+repo_name: RhysDeimel/your_code_is_trash
+
+theme:
+  name: "material"
+
+plugins:
+  - mkdocstrings
+  - search
+
+extra:
+  version:
+    provider: mike
+
+
+nav:
+  - Scaffold Docs: index.md
+  - tutorials.md
+  - How-To Guides: how-to-guides.md
+  - reference.md
+  - explanation.md

@@ -1,0 +1,32 @@
+name: Bug report  🐞
+description: Create a report to help us improve
+labels: ["triage", "bug"]
+## Type is only available with paid plans
+# labels: ["triage"]
+# type: bug
+
+body:
+- type: textarea
+  attributes:
+    label: Description
+    description: A short description of the bug. A TLDR.
+
+- type: textarea
+  attributes:
+    label: Expected Behavior
+    description: A concise description of what you expected to happen.
+
+- type: textarea
+  attributes:
+    label: Current Behavior
+    description: Describe what is happening.
+
+- type: textarea
+  attributes:
+    label: Context
+    description: Add any additional information, ticket/ issues links, etc. to help understand the issue.
+
+- type: textarea
+  attributes:
+    label: Possible Implementation
+    description: Add any suggestions around possible fixes or implementations.

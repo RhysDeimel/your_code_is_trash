@@ -1,0 +1,51 @@
+name: Post version label guide
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  guide:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PR_NUMBER: ${{ github.event.number }}
+      REPO: ${{ github.repository }}
+
+    steps:
+      - name: Ensure bump labels exist
+        run: |
+          gh label create "bump:major" --color "d73a4a" --description "Breaking changes"                        --repo "$REPO" --force
+          gh label create "bump:minor" --color "0075ca" --description "New features, backwards compatible"     --repo "$REPO" --force
+          gh label create "bump:patch" --color "cfd3d7" --description "Bug fixes, backwards compatible"        --repo "$REPO" --force
+          gh label create "bump:none"  --color "ededed" --description "No release (docs, CI, chores)"          --repo "$REPO" --force
+
+      - name: Auto-label Dependabot PRs
+        if: github.actor == 'dependabot[bot]'
+        run: gh pr edit "$PR_NUMBER" --repo "$REPO" --add-label "bump:patch"
+
+      - name: Post label instructions
+        if: github.actor != 'dependabot[bot]'
+        run: |
+          existing=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" \
+            --jq '[.[] | select(.user.login == "github-actions[bot]") | select(.body | contains("## Version bump"))] | length')
+          [ "$existing" -gt 0 ] && exit 0
+
+          gh pr comment "$PR_NUMBER" --repo "$REPO" --body-file - <<'BODY'
+          ## Version bump
+
+          Before this PR can be merged, apply exactly one of the following labels:
+
+          | Label | When to use |
+          |-------|-------------|
+          | `bump:major` | Breaking changes |
+          | `bump:minor` | New features, backwards compatible |
+          | `bump:patch` | Bug fixes, backwards compatible |
+          | `bump:none`  | No release (docs, CI, chores) |
+
+          > [!IMPORTANT]  
+          > The **version/label** status check will block merge until a label is applied.
+          BODY

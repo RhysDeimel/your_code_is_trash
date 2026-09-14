@@ -1,0 +1,8 @@
+name: Blank issue template  📝
+description: For any issue that doesn't match an existing template.
+labels: ["triage"]
+
+body:
+- type: textarea
+  attributes:
+    label: Description
