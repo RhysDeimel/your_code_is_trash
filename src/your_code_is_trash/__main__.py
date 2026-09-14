@@ -4,6 +4,6 @@
 # If you're pulling in other modules within this folder, don't forget to import
 # them as demonstrated in the example below
 
-from your_code_is_trash import foo
+from your_code_is_trash import agent as a
 
-foo.main()
+a.agent(a.message)

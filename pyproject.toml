@@ -5,10 +5,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "your_code_is_trash"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dynamic = ["readme", "version"]
 dependencies = [
-    "redis==8.1.0",
+    "strands-agents[anthropic]",
+    "strands-agents-tools",
+    "botocore[crt]"
 ]
 authors = [
     {name = "Rhys Deimel", email = "deimelr@hotmail.com"},

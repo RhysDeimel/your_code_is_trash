@@ -1,4 +1,4 @@
-site_name: Scaffold Docs
+site_name: Your Code is Trash Docs
 site_url: https://your_code_is_trash.ragedriven.dev/
 repo_url: https://github.com/RhysDeimel/your_code_is_trash
 repo_name: RhysDeimel/your_code_is_trash
@@ -16,7 +16,7 @@ extra:
 
 
 nav:
-  - Scaffold Docs: index.md
+  - Your Code is Trash Docs: index.md
   - tutorials.md
   - How-To Guides: how-to-guides.md
   - reference.md
